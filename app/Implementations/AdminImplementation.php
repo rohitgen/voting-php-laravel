@@ -24,8 +24,6 @@ class AdminImplementation implements AdminInterface
 
         // Save the candidate to the database
         $candidate->save();
-
-        return;
     }
 
     public function addElectionDetails(Request $request) : void
