@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\session;
@@ -16,12 +17,17 @@ class AdminAuthController extends Controller
     }
 
     public function postLogin(Request $request){
-        $this->validate($request, [
+        $validatedData = $this->validate($request, [
             'admin_id'    => 'required',
             'password' => 'required',
         ]);
+        $adminId = $validatedData['admin_id'];
+        $adminPassword = $validatedData['password'];
+        $admin = Admin::where('admin_id', $adminId)
+            ->where('password', $adminPassword)
+            ->first();
         //$user= Auth()->user();
-        if (1) {
+        if ($admin) {
             return redirect()->intended(route('adminDashboard'));
         }
         else {
