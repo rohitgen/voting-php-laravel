@@ -21,10 +21,11 @@ class CheckElectionTime
         $currentTime = Carbon::now();
         $currentDate = Carbon::now()->toDateString();
         $electionDay = ElectionDay::where('election_date', $currentDate)->first();
-        $electionStartTime = $electionDay->election_start_time;
 
-        if ($currentTime->greaterThanOrEqualTo($electionStartTime)) {
-            return $next($request);
+        if($electionDay && $electionDay->election_start_time) {
+            if ($currentTime->greaterThanOrEqualTo($electionDay->election_start_time)) {
+                return $next($request);
+            }
         }
         return response()->view('errors.election-time', [], 403);
 

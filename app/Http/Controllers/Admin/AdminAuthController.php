@@ -7,7 +7,8 @@ use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\session;
-
+use App\Events\AdminLoggedIn;
+use Illuminate\Support\Facades\Event;
 
 class AdminAuthController extends Controller
 {
@@ -26,9 +27,9 @@ class AdminAuthController extends Controller
         $admin = Admin::where('admin_id', $adminId)
             ->where('password', $adminPassword)
             ->first();
-        //$user= Auth()->user();
         if ($admin) {
-            return redirect()->intended(route('adminDashboard'));
+            Event::dispatch(new AdminLoggedIn($admin));
+            return redirect('admin/dashboard');
         }
         else {
             return redirect()->back()->withErrors(['message' => 'Invalid credentials']);
@@ -37,36 +38,6 @@ class AdminAuthController extends Controller
     }
 
 
-//    public function postLogin(Request $request)
-//    {
-//        $this->validate($request, [
-//            'adminId'    => 'required',
-//            'password' => 'required',
-//        ]);
-//        $credentials = $request->only('adminId', 'password');
-//
-//        if (Auth::guard('admin')->attempt($credentials)) {
-//            // Admin authentication successful
-//            return redirect()->intended(route('adminDashboard'));
-//        } else {
-//            // Admin authentication failed
-//            return redirect()->back()->withErrors(['message' => 'Invalid credentials']);
-//        }
-//
-//        // if (auth()->guard('admin')->attempt(['adminId'    => $request->input('adminId'),
-//        //                                      'password' => $request->input('password')
-//        // ])) {
-//        //     dd(1);
-//        //     $user = auth()->guard('admin')->user();
-//        //     if ($user->is_admin == 1) {
-//        //         return redirect()->route('adminDashboard')->with('success', 'You are Logged in successfully.');
-//        //     }
-//        // } else {
-//        //     dd('here');
-//        //     return back()->with('error', 'Whoops! invalid adminId and password.');
-//        // }
-//    }
-//
     public function adminLogout(Request $request)
     {
         auth()->guard('admin')->logout();

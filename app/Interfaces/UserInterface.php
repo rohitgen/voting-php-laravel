@@ -13,7 +13,7 @@ interface UserInterface {
 
     public function getElectionDay() : ElectionDay ;
 
-    public function voteForCandidate(Request $request): void;
+    public function voteForCandidate(Request $request): array;
 
     public function getUser(Request $request): User;
 

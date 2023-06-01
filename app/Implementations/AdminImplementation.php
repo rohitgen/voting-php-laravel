@@ -17,13 +17,14 @@ class AdminImplementation implements AdminInterface
             'place' => 'required',
         ]);
 
-        // Create a new candidate instance
-        $candidate = new Candidate();
-        $candidate->name = $validatedData['name'];
-        $candidate->place = $validatedData['place'];
+         Candidate::create([
+            'name' => $validatedData['name'],
+            'place' => $validatedData['place']
+        ]);
 
-        // Save the candidate to the database
-        $candidate->save();
+
+
+
     }
 
     public function addElectionDetails(Request $request) : void
@@ -33,13 +34,12 @@ class AdminImplementation implements AdminInterface
             'election_day_id' => 'required',
         ]);
 
-        // Create a new election detail instance
-        $election_detail = new ElectionDetail();
-        $election_detail->candidate_id = $validatedData['candidate_id'];
-        $election_detail->election_day_id = $validatedData['election_day_id'];
 
-        // Save the election detail to the database
-        $election_detail->save();
+        ElectionDetail::create([
+            'candidate_id' => $validatedData['candidate_id'],
+            'election_day_id' => $validatedData['election_day_id']
+        ]);
+
     }
 
     public function addElectionDay(Request $request) :void
@@ -50,14 +50,13 @@ class AdminImplementation implements AdminInterface
             'election_date'       => 'required',
         ]);
 
-        // Create a new election day instance
-        $election_day = new ElectionDay();
+        ElectionDay::create([
+            'election_start_time' => $validatedData['election_start_time'],
+            'election_end_time'   => $validatedData['election_end_time'],
+            'election_date'       => $validatedData['election_date']
+        ]);
 
-        $election_day->election_start_time = $validatedData['election_start_time'];
-        $election_day->election_end_time = $validatedData['election_end_time'];
-        $election_day->election_date = $validatedData['election_date'];
-        // Save the election day to the database
-        $election_day->save();
+
     }
 
 
@@ -69,5 +68,10 @@ class AdminImplementation implements AdminInterface
     public function allElectionDays() : \Illuminate\Database\Eloquent\Collection
     {
         return(ElectionDay::all());
+    }
+
+    public function allElectionDetails() : \Illuminate\Database\Eloquent\Collection
+    {
+        return(ElectionDetail::all());
     }
 }

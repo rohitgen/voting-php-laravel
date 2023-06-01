@@ -16,7 +16,6 @@
             {{ __('Candidates') }}
         </h2>
     </x-slot>
-
     <div style="padding: 12px;">
         <div style="background-color: #fff; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="padding: 20px;">
@@ -24,7 +23,7 @@
                     <!-- Add your add candidate form HTML content here -->
 
                     <div style="margin-left: 80%;">
-                        @if(auth()->user()->vote_status)
+                        @if($voteStatus)
                             <p>Status : Vote has already been cast</p>
 
                         @else
@@ -64,7 +63,7 @@
                                     <!-- Add more candidate details here -->
 
                                     <td>
-                                        @if (auth()->user()->vote_status)
+                                        @if ($voteStatus)
                                             <button type="button" disabled class="disabled-button">
                                                 Already Voted
                                             </button>
@@ -117,7 +116,7 @@
             showCancelButton  : true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor : '#d33',
-            confirmButtonText : 'Yes!'
+            confirmButtonText : 'Yes!',
         }).then((result) => {
             if (result.isConfirmed) {
                 // TO DO ajax call to update the db with the vote status
@@ -128,7 +127,25 @@
                         "candidate_id": candidateID,
                     },
                     success: function (data) {
-                        location.reload();
+                        if(data.status == 200) {
+                            Swal.fire({
+                                title            : data.message,
+                                confirmButtonText: 'OK',
+                                icon : 'success',
+                            }).then((result) => {
+                                location.reload();
+                            })
+
+                        } else {
+                            Swal.fire({
+                                title            : data.message,
+                                confirmButtonText: 'OK',
+                                icon             : 'error',
+                            }).then((result) => {
+                                location.reload();
+                            })
+
+                        }
                     }
                 });
             }

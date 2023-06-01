@@ -63,6 +63,26 @@
                                     </button>
                                 </div>
                             </form>
+{{--                            @if ($electionDetails)--}}
+{{--                                <div class="candidates-container mt-4">--}}
+{{--                                    <table class="table mt-4">--}}
+{{--                                        <thead>--}}
+{{--                                        <tr>--}}
+{{--                                            <th scope="col">Election Day Id</th>--}}
+{{--                                            <th scope="col">Candidate Id</th>--}}
+{{--                                        </tr>--}}
+{{--                                        </thead>--}}
+{{--                                        <tbody>--}}
+{{--                                        <h4>Candidates Details</h4>--}}
+{{--                                        @foreach($electionDetails as $electionDetail)--}}
+
+{{--                                            <td><p>{{ $electionDetail->candidate_id }}</p></td>--}}
+{{--                                            <td><p>{{$electionDetail->election_day_id}}</p></td>--}}
+{{--                                        </tbody>--}}
+{{--                                        @endforeach--}}
+{{--                                    </table>--}}
+{{--                                </div>--}}
+{{--                            @endif--}}
                         </div>
                     </div>
                 </div>
