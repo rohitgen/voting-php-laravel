@@ -19,7 +19,7 @@
                     @if ($candidateWithHighestVotes)
                         <div class="result-container">
                             <h2>Candidate with Highest Votes</h2>
-                            <p>Candidate Name: {{ $candidateWithHighestVotes->candidate->name }}</p>
+                            <p>Candidate Name: {{ $candidateWithHighestVotes->name }}</p>
                             <p>Total Votes: {{ $highestVotes }}</p>
                         </div>
                     @else

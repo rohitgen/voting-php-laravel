@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Console\Commands;
+
 use App\Models\results;
 use App\Models\voting;
+use App\Models\candidate;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Console\Command;
 
 class ComputeTotalVotes extends Command
@@ -13,7 +16,6 @@ class ComputeTotalVotes extends Command
      * @var string
      */
     protected $signature = 'votes:compute';
-
     /**
      * The console command description.
      *
@@ -49,15 +51,23 @@ class ComputeTotalVotes extends Command
             $totalVotesCount = $votes->total_votes;
 
             // Check if the candidate already exists in the results table
-            $result = results::where('candidate_id', $candidateId)->first();
+//            $result = results::where('candidate_id', $candidateId)->first();
+            $result = DB::connection('new_db_connection')->table('results')->where('candidate_id',
+                $candidateId)->first();
 
             if ($result) {
                 // Update the total votes for the candidate
-                $result->total_votes = $totalVotesCount;
-                $result->save();
+//                $result->total_votes = $totalVotesCount;
+//                $result->save();
+                DB::connection('new_db_connection')->table('results')->where('candidate_id', $candidateId)
+                    ->update(['total_votes' => $totalVotesCount]);
             } else {
                 // Create a new entry in the results table
-                results::create([
+//                results::create([
+//                    'candidate_id' => $candidateId,
+//                    'total_votes'  => $totalVotesCount,
+//                ]);
+                DB::connection('new_db_connection')->table('results')->insert([
                     'candidate_id' => $candidateId,
                     'total_votes'  => $totalVotesCount,
                 ]);
@@ -65,12 +75,18 @@ class ComputeTotalVotes extends Command
         }
 
         // Retrieve the candidate with the highest total votes
-        $highestVotesCandidate = results::with('candidate')
-            ->orderBy('total_votes', 'desc')
+//        $highestVotesCandidate = results::with('candidate')
+//            ->orderBy('total_votes', 'desc')
+//            ->first();
+        $highestVotesCandidate = DB::connection('new_db_connection')
+            ->table('results')
+            ->join('elections.candidates', 'results.candidate_id', '=', 'elections.candidates.candidate_id')
+            ->select('results.*', 'elections.candidates.*')
+            ->orderBy('results.total_votes', 'desc')
             ->first();
 
         if ($highestVotesCandidate) {
-            $candidateName = $highestVotesCandidate->candidate->name;
+            $candidateName = $highestVotesCandidate->name;
             $totalVotes = $highestVotesCandidate->total_votes;
 
             // Display the candidate with the highest total votes to the user
@@ -79,6 +95,6 @@ class ComputeTotalVotes extends Command
         } else {
             $this->info('No candidate found in the results table.');
         }
-       // return 0;
+        // return 0;
     }
 }

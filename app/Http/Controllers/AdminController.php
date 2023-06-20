@@ -7,8 +7,6 @@ use App\Models\ElectionDetail;
 use App\Models\ElectionDay;
 use App\Interfaces\AdminInterface;
 use Illuminate\Support\Facades\Session;
-
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use mysql_xdevapi\Exception;
 
@@ -27,22 +25,24 @@ class AdminController extends Controller
             $this->adminInterface->addCandidate($request);
 
             // Redirect back to the admin dashboard with a success message
-            return redirect()->route('adminDashboard')->with('success', 'Candidate added successfully.');
-        }catch (Exception $e) {
+//            return redirect()->route('adminDashboard')->with('success', 'Candidate added successfully.');
+            return redirect()->back();
+        } catch (Exception $e) {
             Session::flash('message', $e->getMessage());
+
             return redirect()->route('adminDashboard');
         }
-
     }
 
     public function addElectionDetails(Request $request): \Illuminate\Http\RedirectResponse
     {
         try {
             $this->adminInterface->addElectionDetails($request);
-            // Redirect back to the admin dashboard with a success message
-            return redirect()->route('adminDashboard');
+
+            return redirect()->back();
         } catch (\Exception $e) {
             Session::flash('message', $e->getMessage());
+
             return redirect()->route('adminDashboard');
         }
     }
@@ -52,12 +52,12 @@ class AdminController extends Controller
         try {
             $this->adminInterface->addElectionDay($request);
 
-            // Redirect back to the admin dashboard with a success message
-            return redirect()->route('adminDashboard');
-        }catch (Exception $e) {
+            return redirect()->back();
+        } catch (Exception $e) {
             Session::flash('message', $e->getMessage());
-            return redirect()->route('adminDashboard');}
 
+            return redirect()->route('adminDashboard');
+        }
     }
 
     public function dashboard()
@@ -70,8 +70,8 @@ class AdminController extends Controller
     public function addCandidateForm()
     {
         $candidates = $this->adminInterface->allCandidates();
-        if($candidates!=null ) {
-            return view('admin.add-candidate',['candidates' => $candidates]);
+        if ($candidates != null) {
+            return view('admin.add-candidate', ['candidates' => $candidates]);
         }
     }
 
@@ -86,20 +86,32 @@ class AdminController extends Controller
             $candidate_id_info = $this->adminInterface->allCandidates();
             $electionDetails = $this->adminInterface->allElectionDetails();
 
-            return view('admin.add-election-details',[
-                'candidateIds' => $candidate_id_info,
-                'electionDay'       => $electionDay,
-                'electionDetails'   => $electionDetails,
-                ]);
+            return view('admin.add-election-details', [
+                'candidateIds'    => $candidate_id_info,
+                'electionDay'     => $electionDay,
+                'electionDetails' => $electionDetails,
+            ]);
         }
     }
-
-
 
     public function addElectionDayForm()
     {
         $electionDays = $this->adminInterface->allElectionDays();
 
-        return view('admin.add-election-day',['electionDays' => $electionDays]);
+        return view('admin.add-election-day', ['electionDays' => $electionDays]);
+    }
+
+    public function deleteCandidate(Candidate $candidate)
+    {
+        $this->adminInterface->deleteCandidate($candidate);
+
+        return redirect()->back();
+    }
+
+    public function updateCandidate(Request $request)
+    {
+        $this->adminInterface->updateCandidate($request);
+        dd("here");
+        return redirect()->back();
     }
 }

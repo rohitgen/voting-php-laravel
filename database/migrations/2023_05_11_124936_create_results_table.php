@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateResultsTable extends Migration
 {
+    protected $connection = 'new_db_connection';
+
     /**
      * Run the migrations.
      *

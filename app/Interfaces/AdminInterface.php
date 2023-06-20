@@ -14,4 +14,6 @@ interface AdminInterface
     public function allCandidates() : \Illuminate\Database\Eloquent\Collection;
     public function allElectionDays(): \Illuminate\Database\Eloquent\Collection;
     public function allElectionDetails(): \Illuminate\Database\Eloquent\Collection;
+    public function deleteCandidate(Candidate $candidate) : void;
+    public function updateCandidate(Request $request, Candidate $candidate) : void;
 }

@@ -74,4 +74,21 @@ class AdminImplementation implements AdminInterface
     {
         return(ElectionDetail::all());
     }
+
+    public function deleteCandidate(Candidate $candidate) : void
+    {
+        $candidate->delete();
+    }
+
+    public function updateCandidate(Request $request,Candidate $candidate) : void
+    {
+        $validatedData = $request->validate([
+            'name'         => 'required',
+            'place'        => 'required',
+        ]);
+
+        $candidate->name = $validatedData['name'];
+        $candidate->place = $validatedData['place'];
+        $candidate->save();
+    }
 }
